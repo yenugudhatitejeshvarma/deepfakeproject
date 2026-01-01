@@ -1,0 +1,34 @@
+# Ignore backend files
+backend_api.py
+requirements.txt
+Procfile
+runtime.txt
+fly.toml
+grad_cam_utils.py
+run_model.py
+run_model.bat
+run_model.ps1
+start_backend.bat
+start_backend.ps1
+check_gpu.py
+download_model.py
+test_backend.py
+test_model.py
+test_warning.py
+verify_model.py
+
+# Ignore Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Ignore chrome extension (not needed for frontend)
+chrome-extension/
+
+# Ignore documentation (optional)
+*.md
+!frontend/deepfake/README.md
+
+# Keep only frontend
+!frontend/
+

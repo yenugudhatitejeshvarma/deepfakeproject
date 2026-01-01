@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd frontend/deepfake && npm install && npm run build",
+  "outputDirectory": "frontend/deepfake/dist",
+  "framework": null,
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./frontend/deepfake/"
+}
+
