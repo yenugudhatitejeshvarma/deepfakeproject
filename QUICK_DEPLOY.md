@@ -12,9 +12,12 @@
 2. **Deploy to Vercel**
    - Go to [vercel.com/new](https://vercel.com/new)
    - Import your GitHub repo
-   - **Root Directory**: `frontend/deepfake`
+   - **IMPORTANT**: Set **Root Directory** to `frontend/deepfake` (click "Edit" next to Root Directory)
+   - Framework will auto-detect as Vite
    - Add Environment Variable: `VITE_API_URL` = `https://your-backend-url.com`
    - Click Deploy
+   
+   **Note**: Setting Root Directory to `frontend/deepfake` ensures Vercel only builds the frontend and ignores the Flask backend.
 
 3. **Done!** Your frontend is live at `https://your-project.vercel.app`
 

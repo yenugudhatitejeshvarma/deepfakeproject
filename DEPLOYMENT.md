@@ -30,10 +30,16 @@ This guide covers deploying the Deepfake Detection application to production.
    - Click "Add New Project"
    - Import your GitHub repository
    - Set the following configuration:
-     - **Root Directory**: `frontend/deepfake`
-     - **Framework Preset**: Vite
-     - **Build Command**: `npm run build`
-     - **Output Directory**: `dist`
+     - **Root Directory**: Leave empty (root of repo) - vercel.json handles this
+     - **Framework Preset**: Other (or Vite)
+     - **Build Command**: `cd frontend/deepfake && npm install && npm run build`
+     - **Output Directory**: `frontend/deepfake/dist`
+     
+   **OR** use the simpler approach:
+   - **Root Directory**: `frontend/deepfake`
+   - **Framework Preset**: Vite
+   - **Build Command**: `npm run build` (auto-detected)
+   - **Output Directory**: `dist` (auto-detected)
    
 3. **Add Environment Variables**
    - In Vercel project settings, go to "Environment Variables"
