@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Frontend
+frontend/deepfake/node_modules/
+frontend/deepfake/dist/
+frontend/deepfake/.vite/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Model cache (optional - uncomment if you don't want to track model files)
+# .cache/
+# models/
+
+# Logs
+*.log
+

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deepfake Detector</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 500px;
+      min-height: 600px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      background: #f8f8f8;
+      color: #000000;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .header {
+      text-align: center;
+      padding: 2rem 1.5rem 1.5rem;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 200;
+      color: #000000;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 0.8125rem;
+      color: #666666;
+      font-weight: 300;
+    }
+
+    .content {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .upload-section {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-area {
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .upload-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .upload-text {
+      color: #666666;
+      font-size: 0.875rem;
+      font-weight: 400;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    .upload-button {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .upload-button:hover {
+      background: #1a1a1a;
+    }
+
+    .image-preview {
+      position: relative;
+      padding: 1.5rem;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      max-height: 300px;
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #e0e0e0;
+    }
+
+    .clear-button {
+      position: absolute;
+      top: 1.75rem;
+      right: 1.75rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #000000;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .clear-button:hover {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .actions {
+      padding: 1.5rem 2rem;
+      text-align: center;
+      background: #fafafa;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .analyze-button {
+      padding: 0.875rem 2.5rem;
+      background: #000000;
+      color: #ffffff;
+      border: 1px solid #000000;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .analyze-button:hover:not(:disabled) {
+      background: #1a1a1a;
+    }
+
+    .analyze-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      padding: 1rem 1.5rem;
+      background: #ffffff;
+      color: #000000;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      font-size: 0.8125rem;
+    }
+
+    .results-section {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      margin-top: 1.5rem;
+    }
+
+    .results-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .results-header h2 {
+      font-size: 1.125rem;
+      font-weight: 300;
+      color: #000000;
+    }
+
+    .prediction-card {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .prediction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .prediction-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #666666;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .prediction-value {
+      font-size: 2rem;
+      font-weight: 200;
+      color: #000000;
+      letter-spacing: -1px;
+    }
+
+    .confidence-bar {
+      position: relative;
+      height: 32px;
+      background: #f0f0f0;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: #000000;
+      transition: width 0.5s ease;
+    }
+
+    .confidence-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 500;
+      color: #ffffff;
+      font-size: 0.75rem;
+      z-index: 1;
+    }
+
+    .probabilities {
+      padding: 1.5rem;
+      background: #fafafa;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .prob-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .prob-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .prob-label {
+      min-width: 45px;
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #000000;
+    }
+
+    .prob-bar {
+      flex: 1;
+      height: 24px;
+      background: #f0f0f0;
+      border: 1px solid #e0e0e0;
+      overflow: hidden;
+    }
+
+    .prob-fill {
+      height: 100%;
+      background: #000000;
+      transition: width 0.5s ease;
+    }
+
+    .prob-value {
+      min-width: 45px;
+      text-align: right;
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: #000000;
+    }
+
+    .info-section {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-section:last-child {
+      border-bottom: none;
+    }
+
+    .info-section h3 {
+      font-size: 0.7rem;
+      font-weight: 400;
+      color: #000000;
+      margin-bottom: 1rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 0.5rem;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-weight: 400;
+      color: #666666;
+      font-size: 0.75rem;
+    }
+
+    .info-value {
+      color: #000000;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666666;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Deepfake Detector</h1>
+      <p>Detect deepfakes in images</p>
+    </div>
+
+    <div class="content">
+      <div class="page-scan-section" style="background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); margin-bottom: 1.5rem; padding: 1.5rem; text-align: center;">
+        <button id="scan-page-button" class="upload-button" style="width: 100%; margin-bottom: 0.5rem;">Scan This Page</button>
+        <button id="clear-badges-button" style="display: inline-block; padding: 0.5rem 1.5rem; background: #ffffff; color: #000000; border: 1px solid #000000; cursor: pointer; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; width: 100%;">Clear Badges</button>
+        <p style="font-size: 0.7rem; color: #666666; margin-top: 0.75rem; line-height: 1.5;">Automatically analyzes all images on the current page and shows REAL/FAKE labels</p>
+      </div>
+      <div class="upload-section">
+        <div class="upload-area" id="upload-area">
+          <div class="upload-placeholder" id="upload-placeholder">
+            <p class="upload-text">Select an image to analyze</p>
+            <input type="file" id="file-input" accept="image/*">
+            <label for="file-input" class="upload-button">Select Image</label>
+          </div>
+          <div class="image-preview" id="image-preview" style="display: none;">
+            <img id="preview-image" alt="Preview">
+            <button class="clear-button" id="clear-button">Clear</button>
+          </div>
+        </div>
+        <div class="actions" id="actions" style="display: none;">
+          <button class="analyze-button" id="analyze-button">Analyze Image</button>
+        </div>
+        <div class="error-message" id="error-message" style="display: none;"></div>
+      </div>
+
+      <div class="results-section" id="results-section" style="display: none;">
+        <div class="results-header">
+          <h2>Analysis Results</h2>
+        </div>
+        <div id="results-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
